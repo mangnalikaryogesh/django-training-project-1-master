@@ -1,0 +1,33 @@
+document.getElementById('view-more').addEventListener('click', function() {
+            fetch('moreItems', {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const productsContainer = document.getElementById('products-container');
+                productsContainer.innerHTML = ''; // Clear current products
+                const csrfToken = document.getElementById('csrf-token').value; // Fetch CSRF token
+                data.products.forEach((product, index) => {
+                    const productHtml = `
+                        <div class="col-md-4">
+                            <div class="card product-card">
+                                <img src="https://picsum.photos/200/200?random=${index + 1}" class="card-img-top" alt="${product.name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.name}</h5>
+                                    <p class="card-text">$${product.price}</p>
+                                    <form action="/add_to_cart/${product.id}" class="form" method="post">
+                                        <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+                                        <button type="button" class="btn btn-primary" onclick="submitForm('${product.id}')">Add to Cart</button>
+                                        <p id="added-to-cart-message_${product.id}"> </p>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>`;
+                    productsContainer.innerHTML += productHtml;
+                });
+                document.getElementById('view-more').style.display = 'none'; // Optionally hide the button after loading all items
+            })
+            .catch(error => console.error('Error:', error));
+        });

@@ -1,0 +1,16 @@
+<!-- search_results.html -->
+{% extends 'base.html' %}
+
+{% block body %}
+    <h2>Search Results for "{{ query }}"</h2>
+    {% if blogposts %}
+        <ul>
+            {% for post in blogposts %}
+                <li><a href="{% url "postdetail" post.url %}">{{ post.title }}</a></li>
+                <!-- Add other post details as needed -->
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found for "{{ query }}"</p>
+    {% endif %}
+{% endblock body %}
